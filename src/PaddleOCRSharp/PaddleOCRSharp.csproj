@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net35; netstandard2.0;netcoreapp3.1;net5.0</TargetFrameworks>
+        <PackageTags>OCR;Paddle;AI;CV;PaddleOCR;character recognition;NET;Csharp</PackageTags>
+        <IsPublishable>False</IsPublishable>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <Authors>raoyutian</Authors>
+        <Copyright>Copyright (C) 2023 raoyutian</Copyright>
+        <Company/>
+        <Description>This project is based on Baidu PaddleOCR, Including character recognition, text detection and table OCR recognition based on statistical analysis of text detection results. It can be used without network and has high recognition accuracy.</Description>
+        <PackageProjectUrl>https://github.com/raoyutian/PaddleOCRSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/raoyutian/PaddleOCRSharp</RepositoryUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <AssemblyVersion>3.1.0</AssemblyVersion>
+        <FileVersion>3.1.0</FileVersion>
+        <Version>3.1.0</Version>
+        <Platforms>x64</Platforms>
+        <LangVersion>preview</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <ProduceReferenceAssemblies>true</ProduceReferenceAssemblies>
+        <Nullable>enable</Nullable>
+
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|x64'">
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'  or '$(TargetFramework)' == 'netcoreapp3.1'">
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'net5.0'">
+        <PackageReference Include="System.Drawing.Common" Version="6.0.0"/>
+        <PackageReference Include="System.Text.Json" Version="8.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        
+
+        <None Include="$(SolutionDir)PaddleOCRSharp\PaddleOCRSharp.targets">
+            <Pack>true</Pack>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <PackagePath>build</PackagePath>
+        </None>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <None Update="PaddleOCRLib\inference\PaddleOCRStructure.config.json">
+            <PackagePath>build\PaddleOCRLib</PackagePath>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <Pack>true</Pack>
+        </None>
+    </ItemGroup>
+
+</Project>

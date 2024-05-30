@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>PaddleOCRSharp.runtimes.win_x64</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="runtimes\win-x64\native\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Sdcb.Onnx.runtime.win64" Version="1.11.22.423"/>
+        <None Include="runtimes\**\*" >
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
