@@ -7,21 +7,13 @@ namespace PaddleOCRSharp.Extensions;
 internal static class NativeExtension
 {
 #if  !NET
-    public static void Load(string path)
-    {
-        if (string.IsNullOrEmpty(path)) return;
-        LoadLibrary(path);
-    }
-    
+    public static bool Load(string path) => !string.IsNullOrEmpty(path) && LoadLibrary(path) != IntPtr.Zero;
+
     [DllImport("kernel32.dll")]
     private static extern IntPtr LoadLibrary(string path);
 #else
-    public static void Load(string path)
-    {
-        if (string.IsNullOrEmpty(path)) return;
-        NativeLibrary.Load(path);
-    }
-    
+    public static bool Load(string path) => !string.IsNullOrEmpty(path) && NativeLibrary.TryLoad(path, out var _);
+
 #endif
     
     /// <summary>

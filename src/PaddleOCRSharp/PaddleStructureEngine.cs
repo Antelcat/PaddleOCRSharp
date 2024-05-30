@@ -28,21 +28,21 @@ public class PaddleStructureEngine : EngineBase
     #region PaddleOCR API
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-    internal static extern bool StructureInitialize(string detInfer, string recInfer, string Keys,
-        string TableModelDir, string TableCharDictPath, StructureParameter parameter);
+    internal static extern bool StructureInitialize(string detInfer, string recInfer, string keys,
+        string tableModelDir, string tableCharDictPath, StructureParameter parameter);
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-    internal static extern bool StructureInitializejson(string DetInfer, string RecInfer, string Keys,
-        string TableModelDir, string TableCharDictPath, string parameter);
+    internal static extern bool StructureInitializejson(string detInfer, string recInfer, string keys,
+        string tableModelDir, string tableCharDictPath, string parameter);
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-    internal static extern IntPtr GetStructureDetectFile(string imagefile);
+    internal static extern IntPtr GetStructureDetectFile(string imageFilePath);
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-    internal static extern IntPtr GetStructureDetectByte(byte[] imagebytedata, long size);
+    internal static extern IntPtr GetStructureDetectByte(byte[] imageData, long size);
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-    internal static extern IntPtr GetStructureDetectBase64(string imagebase64);
+    internal static extern IntPtr GetStructureDetectBase64(string base64);
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     internal static extern void FreeStructureEngine();
@@ -52,24 +52,9 @@ public class PaddleStructureEngine : EngineBase
     /// <summary>
     /// PaddleStructureEngine识别引擎对象初始化
     /// </summary>
-    public PaddleStructureEngine() : this(null, new StructureParameter())
-    {
-    }
-
-    /// <summary>
-    /// PaddleStructureEngine识别引擎对象初始化
-    /// </summary>
-    /// <param name="config">模型配置对象，如果为空则按默认值</param>
-    public PaddleStructureEngine(StructureModelConfig config) : this(config, new StructureParameter())
-    {
-    }
-
-    /// <summary>
-    /// PaddleStructureEngine识别引擎对象初始化
-    /// </summary>
     /// <param name="config">模型配置对象，如果为空则按默认值</param>
     /// <param name="parameter">识别参数，为空均按缺省值</param>
-    public PaddleStructureEngine(StructureModelConfig? config, StructureParameter? parameter)
+    public PaddleStructureEngine(StructureModelConfig? config = null, StructureParameter? parameter = null)
     {
         parameter ??= new StructureParameter();
         config    ??= ConfigureExtension.StructureModelConfigDefault;
@@ -92,16 +77,16 @@ public class PaddleStructureEngine : EngineBase
 
         if (string.IsNullOrEmpty(paramJson))
         {
-            paramJson = NativeExtension.BaseDirectory + @"\inference\PaddleOCRStructure.config.json";
-            if (!File.Exists(paramJson)) throw new FileNotFoundException(paramJson);
-            paramJson = File.ReadAllText(paramJson);
+            var path = Path.Combine(NativeExtension.BaseDirectory, @"inference\PaddleOCRStructure.config.json");
+            if (!File.Exists(path)) throw new FileNotFoundException(path);
+            paramJson = File.ReadAllText(path);
         }
 
         if (!StructureInitializejson(config.DetInfer,
                 config.RecInfer,
                 config.Keys,
                 config.TableModelDir,
-                config.TableCharDictPath, paramJson!))
+                config.TableCharDictPath, paramJson))
             throw new Exception("Initialize err:" + GetLastError());
     }
 

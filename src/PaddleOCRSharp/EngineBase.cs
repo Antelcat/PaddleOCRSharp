@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2021 raoyutian  All Rights Reserved.
+﻿// Copyright (c) 2021 raoyutian  All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using PaddleOCRSharp.Extensions;
 
 namespace PaddleOCRSharp;
@@ -29,7 +30,7 @@ public abstract class EngineBase
     /// <summary>
     /// PaddleOCR.dll自定义加载路径，默认为空，如果指定则需在引擎实例化前赋值。
     /// </summary>
-    public static string PaddleOCRDllPath { get; set; } = string.Empty;
+    public static string? PaddleOCRDllPath { get; set; }
 
     internal const string DllName = "PaddleOCR.dll";
 
@@ -41,24 +42,15 @@ public abstract class EngineBase
     /// </summary>
     protected EngineBase()
     {
-        //此行代码无实际意义，用于后面的JsonHelper.DeserializeObject的首次加速，首次初始化会比较慢，放在此处预热。
-        var temp = "{}".DeserializeObject<TextBlock>();
-        try
+
+        if (string.IsNullOrEmpty(PaddleOCRDllPath))
+            PaddleOCRDllPath = Path.Combine(NativeExtension.BaseDirectory, @"runtimes\win-x64\native");
+        if (new DirectoryInfo(PaddleOCRDllPath).GetFiles("*.dll").Any(dll => !NativeExtension.Load(dll.FullName)))
         {
-            if (string.IsNullOrEmpty(PaddleOCRDllPath))
-                PaddleOCRDllPath = Path.Combine(NativeExtension.BaseDirectory, @"runtimes\win-x64\native");
-            if (string.IsNullOrEmpty(PaddleOCRDllPath)) return;
-            var variable = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.Process);
-            if (string.IsNullOrEmpty(variable)) return;
-            Environment.SetEnvironmentVariable("path", variable + ";" + PaddleOCRDllPath, EnvironmentVariableTarget.Process);
-            NativeExtension.Load(Path.Combine(PaddleOCRDllPath, DllName));
-        }
-        catch (Exception e)
-        {
-            throw new Exception("设置自定义加载路径失败。" + e.Message);
+            throw new Exception();
         }
     }
-        
+
     #region private
 
 

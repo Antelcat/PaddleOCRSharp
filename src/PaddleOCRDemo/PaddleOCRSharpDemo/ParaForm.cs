@@ -13,15 +13,16 @@ public partial class ParaForm : Form
     {
         InitializeComponent();
     }
-    string imagefile = "";
+
+    private string imageFilePath = "";
     private void 打开文件ToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        imagefile = "";
+        imageFilePath = "";
         var ofd = new OpenFileDialog();
         ofd.Filter = "*.*|*.bmp;*.jpg;*.jpeg;*.tiff;*.tiff;*.png";
         if (ofd.ShowDialog() != DialogResult.OK) return;
-        imagefile = ofd.FileName;
-        var imageBytes = File.ReadAllBytes(imagefile);
+        imageFilePath = ofd.FileName;
+        var imageBytes = File.ReadAllBytes(imageFilePath);
         pictureBox1.BackgroundImage = new Bitmap(new MemoryStream(imageBytes));
         ParaChanged();
     }
@@ -40,23 +41,22 @@ public partial class ParaForm : Form
             cls_thresh          = Convert.ToSingle(Math.Round(trackBar1.Value * 1.0 / 100, 2))
         };
 
-        var imagescalebyte = File.ReadAllBytes(imagefile);
-        var bitmap         = new Bitmap(new MemoryStream(imagescalebyte));
+        var image = File.ReadAllBytes(imageFilePath);
+        var bitmap         = new Bitmap(new MemoryStream(image));
 
         var scale = Math.Round(trackBar6.Value * 1.0 / 10, 1);
 
-        var tempfile = "";
         bitmap = new Bitmap(bitmap, new Size(Convert.ToInt32(bitmap.Width * scale), Convert.ToInt32(bitmap.Height * scale)));
-        tempfile = Path.GetTempPath() + Guid.NewGuid() + ".bmp";
-        bitmap.Save(tempfile);
+        var tmpFile = Path.GetTempPath() + Guid.NewGuid() + ".bmp";
+        bitmap.Save(tmpFile);
         bitmap.Dispose();
         GC.Collect();
 
         // PaddleOCREngine.Detect(null, tempfile, oCRParameter);
-        File.Delete(tempfile);
+        File.Delete(tmpFile);
         var file      = Environment.CurrentDirectory + "\\ocr_vis.png";
-        var imagebyte = File.ReadAllBytes(file);
-        pictureBox1.BackgroundImage = new Bitmap(new MemoryStream(imagebyte));
+        var imageBytes = File.ReadAllBytes(file);
+        pictureBox1.BackgroundImage = new Bitmap(new MemoryStream(imageBytes));
     }
     private void trackBar1_Scroll(object sender, EventArgs e)
     {

@@ -57,34 +57,17 @@ public class PaddleOCREngine : EngineBase
     #region 文本识别
 
     /// <summary>
-    /// 使用默认参数初始化OCR引擎对象
-    /// </summary>
-    public PaddleOCREngine() : this(null, new OCRParameter())
-    {
-    }
-
-    /// <summary>
-    /// 使用默认参数初始化OCR引擎对象
-    /// </summary>
-    /// <param name="config">模型配置对象，如果为空则按默认值</param>
-    public PaddleOCREngine(OCRModelConfig config) : this(config, new OCRParameter())
-    {
-    }
-
-    /// <summary>
     /// PaddleOCR识别引擎对象初始化
     /// </summary>
     /// <param name="config">模型配置对象，如果为空则按默认值</param>
     /// <param name="parameter">识别参数，为空均按缺省值</param>
-    public PaddleOCREngine(OCRModelConfig? config, OCRParameter? parameter)
+    public PaddleOCREngine(OCRModelConfig? config = null, OCRParameter? parameter = null)
     {
         parameter ??= new OCRParameter();
         config    ??= ConfigureExtension.OCRModelConfigDefault;
 
-        if (!Directory.Exists(config.DetInfer) && parameter.det)
-            throw new DirectoryNotFoundException(config.DetInfer);
-        if (!Directory.Exists(config.ClsInfer) && parameter.cls)
-            throw new DirectoryNotFoundException(config.ClsInfer);
+        if (!Directory.Exists(config.DetInfer) && parameter.det) throw new DirectoryNotFoundException(config.DetInfer);
+        if (!Directory.Exists(config.ClsInfer) && parameter.cls) throw new DirectoryNotFoundException(config.ClsInfer);
         if (!Directory.Exists(config.RecInfer)) throw new DirectoryNotFoundException(config.RecInfer);
         if (!File.Exists(config.Keys)) throw new FileNotFoundException(config.Keys);
         if (!Initialize(config.DetInfer, config.ClsInfer, config.RecInfer, config.Keys, parameter))
@@ -102,18 +85,19 @@ public class PaddleOCREngine : EngineBase
 
         if (string.IsNullOrEmpty(jsonParam))
         {
-            jsonParam =  NativeExtension.BaseDirectory.TrimEnd('\\');
-            jsonParam += @"\inference\PaddleOCR.config.json";
+            jsonParam = Path.Combine(NativeExtension.BaseDirectory, @"inference\PaddleOCR.config.json");
             if (!File.Exists(jsonParam)) throw new FileNotFoundException(jsonParam);
             jsonParam = File.ReadAllText(jsonParam);
         }
 
-        var parameter = jsonParam!.DeserializeObject<OCRParameter>();
+        var parameter = jsonParam.DeserializeObject<OCRParameter>(
+#if NET8
+            SerializeContext.Default.OCRParameter
+#endif
+        )!;
 
-        if (!Directory.Exists(config.DetInfer) && parameter.det)
-            throw new DirectoryNotFoundException(config.DetInfer);
-        if (!Directory.Exists(config.ClsInfer) && parameter.cls)
-            throw new DirectoryNotFoundException(config.ClsInfer);
+        if (!Directory.Exists(config.DetInfer) && parameter.det) throw new DirectoryNotFoundException(config.DetInfer);
+        if (!Directory.Exists(config.ClsInfer) && parameter.cls) throw new DirectoryNotFoundException(config.ClsInfer);
         if (!Directory.Exists(config.RecInfer)) throw new DirectoryNotFoundException(config.RecInfer);
         if (!File.Exists(config.Keys)) throw new FileNotFoundException(config.Keys);
         if (!Initializejson(config.DetInfer, config.ClsInfer, config.RecInfer, config.Keys, jsonParam!))
@@ -171,10 +155,7 @@ public class PaddleOCREngine : EngineBase
         if (ptrResult == IntPtr.Zero)
         {
             var err = GetLastError();
-            if (!string.IsNullOrEmpty(err))
-            {
-                throw new Exception("内部遇到错误：" + err);
-            }
+            if (!string.IsNullOrEmpty(err)) throw new Exception("Internal Error：" + err);
 
             return result;
         }
@@ -182,7 +163,11 @@ public class PaddleOCREngine : EngineBase
         try
         {
             var json       = Marshal.PtrToStringUni(ptrResult);
-            var textBlocks = json!.DeserializeObject<List<TextBlock>>();
+            var textBlocks = json!.DeserializeObject<List<TextBlock>>(
+#if NET8
+                SerializeContext.Default.ListTextBlock
+#endif
+            ) ?? [];
             result.JsonText   = json!;
             result.TextBlocks = textBlocks;
             Marshal.FreeHGlobal(ptrResult);
@@ -253,21 +238,14 @@ public class PaddleOCREngine : EngineBase
                     .ToList();
                 var texts = textBlocks.Select(static x => x.Text).ToArray();
 
-                var cell = new StructureCells
+
+                structureResult.Cells.Add(new StructureCells
                 {
-                    Row = i,
-                    Col = j
-                };
-
-#if NET35
-                cell.Text = string.Join(string.Empty, texts);
-#else
-                    cell.Text = string.Join<string>(string.Empty, texts);
-#endif
-
-
-                cell.TextBlocks = textBlocks.ToList();
-                structureResult.Cells.Add(cell);
+                    Row        = i,
+                    Col        = j,
+                    Text       = string.Join(string.Empty, texts),
+                    TextBlocks = textBlocks.ToList()
+                });
             }
         }
 

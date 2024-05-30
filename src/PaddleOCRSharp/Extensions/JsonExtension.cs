@@ -18,6 +18,8 @@ using Newtonsoft.Json;
 #else
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Serialization;
+using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace PaddleOCRSharp.Extensions;
@@ -43,21 +45,38 @@ internal static class JsonExtension
     /// <typeparam name="T"></typeparam>
     /// <param name="json"></param>
     /// <returns></returns>
-    public static T DeserializeObject<T>(this string json) =>
-        (T)JsonConvert.DeserializeObject(json, typeof(T), Settings);
+    public static T? DeserializeObject<T>(this string json) =>
+        (T?)JsonConvert.DeserializeObject(json, typeof(T), Settings);
 #else
-    /// <summary>
-    /// Json序列化
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    public static string SerializeObject<T>(this T obj) => JsonSerializer.Serialize(obj);
+    public static string SerializeObject<T>(this T obj
+#if NET8
+        , JsonTypeInfo<T> typeInfo
+#endif
+    ) =>
+        JsonSerializer.Serialize(obj
+#if NET8
+            , typeInfo
+#endif
+        );
 
-    public static string SerializeObject<T>(this T obj, JsonTypeInfo<T> typeInfo) =>
-        JsonSerializer.Serialize(obj, typeInfo);
-
-    public static T? DeserializeObject<T>(this string json) => JsonSerializer.Deserialize<T>(json);
-    public static T? DeserializeObject<T>(this string json, JsonTypeInfo<T> typeInfo) =>
-        JsonSerializer.Deserialize(json, typeInfo);
+#if NET8
+#endif
+    public static T? DeserializeObject<T>(this string json
+#if NET8
+        , JsonTypeInfo<T> typeInfo
+#endif
+    ) =>
+        JsonSerializer.Deserialize<T>(json
+#if NET8
+            , typeInfo
+#endif
+        );
 #endif
 }
+
+#if NET8
+[JsonSerializable(typeof(TextBlock))]
+[JsonSerializable(typeof(System.Collections.Generic.List<TextBlock>))]
+[JsonSerializable(typeof(OCRParameter))]
+internal partial class SerializeContext : JsonSerializerContext;
+#endif

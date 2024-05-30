@@ -90,11 +90,11 @@ public partial class MainForm : Form
         if (bmp != null) return bmp;
         var files = Clipboard.GetFileDropList();
 
-        var Filtersarr = new string[files.Count];
-        files.CopyTo(Filtersarr, 0);
-        Filtersarr = Filtersarr.Where(x => bmpFilters.Contains(Path.GetExtension(x).ToLower())).ToArray();
-        if (Filtersarr.Length <= 0) return bmp;
-        var image = File.ReadAllBytes(Filtersarr[0]);
+        var filter = new string[files.Count];
+        files.CopyTo(filter, 0);
+        filter = filter.Where(x => bmpFilters.Contains(Path.GetExtension(x).ToLower())).ToArray();
+        if (filter.Length <= 0) return bmp;
+        var image = File.ReadAllBytes(filter[0]);
         bmp = new Bitmap(new MemoryStream(image));
 
         return bmp;
@@ -106,11 +106,11 @@ public partial class MainForm : Form
         if (data == null) return;
         var files = data.GetData(DataFormats.FileDrop, autoConvert: true) as string[];
 
-        var Filtersarr = new string[files!.Length];
-        files.CopyTo(Filtersarr, 0);
-        Filtersarr = Filtersarr.Where(x => bmpFilters.Contains(Path.GetExtension(x).ToLower())).ToArray();
-        if (Filtersarr.Length <= 0) return;
-        var image = File.ReadAllBytes(Filtersarr[0]);
+        var filter = new string[files!.Length];
+        files.CopyTo(filter, 0);
+        filter = filter.Where(x => bmpFilters.Contains(Path.GetExtension(x).ToLower())).ToArray();
+        if (filter.Length <= 0) return;
+        var image = File.ReadAllBytes(filter[0]);
         bmp              = new Bitmap(new MemoryStream(image));
         imageView1.Image = bmp;
 
