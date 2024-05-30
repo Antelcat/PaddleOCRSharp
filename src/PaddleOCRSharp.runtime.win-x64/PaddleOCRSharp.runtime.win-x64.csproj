@@ -7,12 +7,15 @@
 
     <ItemGroup>
         <Folder Include="runtimes\win-x64\native\"/>
+        <PackageReference Include="Sdcb.Mkldnn.runtime.win64" Version="0.19.0" />
+        <PackageReference Include="Sdcb.Onnx.runtime.win64" Version="1.11.22.423" />
+        <PackageReference Include="Sdcb.Paddle2Onnx.runtime.win64" Version="1.0.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Sdcb.Onnx.runtime.win64" Version="1.11.22.423"/>
         <None Include="runtimes\**\*" >
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </None>
     </ItemGroup>
 

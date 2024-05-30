@@ -32,7 +32,7 @@ public abstract class EngineBase
     /// </summary>
     public static string? PaddleOCRDllPath { get; set; }
 
-    internal const string DllName = "PaddleOCR.dll";
+    internal const string DllName = "PaddleOCR";
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     private static extern IntPtr GetError();
@@ -50,8 +50,9 @@ public abstract class EngineBase
             if (Initialized) return;
             Initialized = true;
         }
-        if (string.IsNullOrEmpty(PaddleOCRDllPath))
-            PaddleOCRDllPath = Path.Combine(NativeExtension.BaseDirectory, @"runtimes\win-x64\native");
+
+        if (string.IsNullOrEmpty(PaddleOCRDllPath)) return;
+        PaddleOCRDllPath = Path.Combine(NativeExtension.BaseDirectory, @"runtimes\win-x64\native");
         if (new DirectoryInfo(PaddleOCRDllPath).GetFiles("*.dll").Any(dll => !NativeExtension.Load(dll.FullName)))
         {
             throw new Exception();
