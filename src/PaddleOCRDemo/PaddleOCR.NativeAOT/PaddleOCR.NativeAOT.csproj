@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\PaddleOCRSharp.Model.V4\PaddleOCRSharp.Model.V4.csproj" />
+      <ProjectReference Include="..\..\PaddleOCRSharp.runtime.win-x64\PaddleOCRSharp.runtime.win-x64.csproj" />
+      <ProjectReference Include="..\..\PaddleOCRSharp\PaddleOCRSharp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="sample.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
