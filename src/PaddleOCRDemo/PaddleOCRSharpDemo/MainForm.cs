@@ -41,27 +41,7 @@ public partial class MainForm : Form
         {
             Directory.CreateDirectory(outPath);
         }
-
-        //自带轻量版中英文模型V3模型
-        OCRModelConfig? config = null;
-
-        //服务器中英文模型
-        //OCRModelConfig config = new OCRModelConfig();
-        //string root = System.IO.Path.GetDirectoryName(typeof(OCRModelConfig).Assembly.Location);
-        //string modelPathroot = root + @"\inferenceserver";
-        //config.det_infer = modelPathroot + @"\ch_ppocr_server_v2.0_det_infer";
-        //config.cls_infer = modelPathroot + @"\ch_ppocr_mobile_v2.0_cls_infer";
-        //config.rec_infer = modelPathroot + @"\ch_ppocr_server_v2.0_rec_infer";
-        //config.keys = modelPathroot + @"\ppocr_keys.txt";
-
-        //英文和数字模型V3
-        //OCRModelConfig config = new OCRModelConfig();
-        //string root = System.IO.Path.GetDirectoryName(typeof(OCRModelConfig).Assembly.Location);
-        //string modelPathroot = root + @"\en_v3";
-        //config.det_infer = modelPathroot + @"\en_PP-OCRv3_det_infer";
-        //config.cls_infer = modelPathroot + @"\ch_ppocr_mobile_v2.0_cls_infer";
-        //config.rec_infer = modelPathroot + @"\en_PP-OCRv3_rec_infer";
-        //config.keys = modelPathroot + @"\en_dict.txt";
+        
 
         //OCR参数
         var ocrParameter = new OCRParameter
@@ -75,13 +55,11 @@ public partial class MainForm : Form
         };
 
         //初始化OCR引擎
-        engine = new PaddleOCREngine(config, ocrParameter);
+        engine = new PaddleOCREngine(KnownModels.ChineseV4, ocrParameter);
 
-        //模型配置，使用默认值
-        StructureModelConfig? structureModelConfig = null;
         //表格识别参数配置，使用默认值
-        var structureParameter = new StructureParameter();
-        StructEngine = new PaddleStructureEngine(structureModelConfig, structureParameter);
+        StructEngine = new PaddleStructureEngine(KnownModels.ChineseV4Param,
+            new StructureParameter());
     }
 
     private Bitmap? GetClipboardImage()

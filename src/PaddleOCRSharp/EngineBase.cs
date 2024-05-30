@@ -36,13 +36,20 @@ public abstract class EngineBase
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     private static extern IntPtr GetError();
+    
+    private static bool Initialized { get; set; }
 
     /// <summary>
     /// 初始化
     /// </summary>
     protected EngineBase()
     {
-
+        if (Initialized) return;
+        lock (DllName)
+        {
+            if (Initialized) return;
+            Initialized = true;
+        }
         if (string.IsNullOrEmpty(PaddleOCRDllPath))
             PaddleOCRDllPath = Path.Combine(NativeExtension.BaseDirectory, @"runtimes\win-x64\native");
         if (new DirectoryInfo(PaddleOCRDllPath).GetFiles("*.dll").Any(dll => !NativeExtension.Load(dll.FullName)))
@@ -52,7 +59,6 @@ public abstract class EngineBase
     }
 
     #region private
-
 
 
     /// <summary>
@@ -77,13 +83,11 @@ public abstract class EngineBase
     }
 
     #endregion
+
     /// <summary>
     /// 释放内存
     /// </summary>
-    public virtual void Dispose()
-    {
-    }
-        
+    public abstract void Dispose();
         
     /// <summary>
     /// 获取底层错误信息

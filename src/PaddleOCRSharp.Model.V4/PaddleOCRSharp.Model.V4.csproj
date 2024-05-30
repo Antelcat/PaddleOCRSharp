@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="runtimes\**\*" >
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <None Update="models\**\*">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 </Project>

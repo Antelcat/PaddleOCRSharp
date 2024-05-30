@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace PaddleOCRSharp.Extensions;
@@ -36,6 +35,4 @@ internal static class NativeExtension
         if (!Environment.Is64BitProcess) throw new NotSupportedException("Not support 32bit process.");
 #endif
     }
-
-   
 }

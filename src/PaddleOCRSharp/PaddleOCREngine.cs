@@ -33,9 +33,9 @@ public class PaddleOCREngine : EngineBase
     private static extern bool Initialize(string detInfer, string clsInfer, string recInfer, string keys,
         OCRParameter parameter);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+    /*[DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     private static extern bool Initializejson(string detInfer, string clsInfer, string recInfer, string keys,
-        string parameterJson);
+        string parameterJson);*/
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     private static extern IntPtr Detect(string imageFile);
@@ -61,46 +61,15 @@ public class PaddleOCREngine : EngineBase
     /// </summary>
     /// <param name="config">模型配置对象，如果为空则按默认值</param>
     /// <param name="parameter">识别参数，为空均按缺省值</param>
-    public PaddleOCREngine(OCRModelConfig? config = null, OCRParameter? parameter = null)
+    public PaddleOCREngine(OCRModelConfig config, OCRParameter? parameter = null)
     {
         parameter ??= new OCRParameter();
-        config    ??= ConfigureExtension.OCRModelConfigDefault;
 
         if (!Directory.Exists(config.DetInfer) && parameter.det) throw new DirectoryNotFoundException(config.DetInfer);
         if (!Directory.Exists(config.ClsInfer) && parameter.cls) throw new DirectoryNotFoundException(config.ClsInfer);
         if (!Directory.Exists(config.RecInfer)) throw new DirectoryNotFoundException(config.RecInfer);
         if (!File.Exists(config.Keys)) throw new FileNotFoundException(config.Keys);
         if (!Initialize(config.DetInfer, config.ClsInfer, config.RecInfer, config.Keys, parameter))
-            throw new Exception("Initialize err:" + GetLastError());
-    }
-
-    /// <summary>
-    /// PaddleOCR识别引擎对象初始化
-    /// </summary>
-    /// <param name="config">模型配置对象，如果为空则按默认值</param>
-    /// <param name="jsonParam">识别参数json字符串</param>
-    public PaddleOCREngine(OCRModelConfig? config, string? jsonParam)
-    {
-        config ??= ConfigureExtension.OCRModelConfigDefault;
-
-        if (string.IsNullOrEmpty(jsonParam))
-        {
-            jsonParam = Path.Combine(NativeExtension.BaseDirectory, @"inference\PaddleOCR.config.json");
-            if (!File.Exists(jsonParam)) throw new FileNotFoundException(jsonParam);
-            jsonParam = File.ReadAllText(jsonParam);
-        }
-
-        var parameter = jsonParam.DeserializeObject<OCRParameter>(
-#if NET8
-            SerializeContext.Default.OCRParameter
-#endif
-        )!;
-
-        if (!Directory.Exists(config.DetInfer) && parameter.det) throw new DirectoryNotFoundException(config.DetInfer);
-        if (!Directory.Exists(config.ClsInfer) && parameter.cls) throw new DirectoryNotFoundException(config.ClsInfer);
-        if (!Directory.Exists(config.RecInfer)) throw new DirectoryNotFoundException(config.RecInfer);
-        if (!File.Exists(config.Keys)) throw new FileNotFoundException(config.Keys);
-        if (!Initializejson(config.DetInfer, config.ClsInfer, config.RecInfer, config.Keys, jsonParam!))
             throw new Exception("Initialize err:" + GetLastError());
     }
 

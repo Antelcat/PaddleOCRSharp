@@ -12,38 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using PaddleOCRSharp.Extensions;
+
 namespace PaddleOCRSharp;
 
 /// <summary>
-/// 模型配置对象
+/// Shared configs
 /// </summary>
-public class OCRModelConfig
+public abstract class SharedConfig
 {
     /// <summary>
-    /// det_infer模型路径
+    /// det_infer model directory
     /// </summary>
     public string DetInfer { get; set; }
 
     /// <summary>
-    /// cls_infer模型路径
-    /// </summary>
-    public string ClsInfer { get; set; }
-
-    /// <summary>
-    /// rec_infer模型路径
+    /// rec_infer model directory
     /// </summary>
     public string RecInfer { get; set; }
 
     /// <summary>
-    /// ppocr_keys.txt文件名全路径
+    /// ppocr_keys file path
     /// </summary>
     public string Keys { get; set; }
 }
 
 /// <summary>
+/// 模型配置对象
+/// </summary>
+public class OCRModelConfig : SharedConfig
+{
+    
+    /// <summary>
+    /// cls_infer model directory
+    /// </summary>
+    public string ClsInfer { get; set; }
+}
+
+
+
+/// <summary>
 /// 表格模型配置对象
 /// </summary>
-public class StructureModelConfig : OCRModelConfig
+public class StructureModelConfig : SharedConfig
 {
     /// <summary>
     /// table_model_dir模型路径

@@ -31,9 +31,9 @@ public class PaddleStructureEngine : EngineBase
     internal static extern bool StructureInitialize(string detInfer, string recInfer, string keys,
         string tableModelDir, string tableCharDictPath, StructureParameter parameter);
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+    /*[DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     internal static extern bool StructureInitializejson(string detInfer, string recInfer, string keys,
-        string tableModelDir, string tableCharDictPath, string parameter);
+        string tableModelDir, string tableCharDictPath, string parameter);*/
 
     [DllImport(DllName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
     internal static extern IntPtr GetStructureDetectFile(string imageFilePath);
@@ -54,39 +54,14 @@ public class PaddleStructureEngine : EngineBase
     /// </summary>
     /// <param name="config">模型配置对象，如果为空则按默认值</param>
     /// <param name="parameter">识别参数，为空均按缺省值</param>
-    public PaddleStructureEngine(StructureModelConfig? config = null, StructureParameter? parameter = null)
+    public PaddleStructureEngine(StructureModelConfig config, StructureParameter? parameter = null)
     {
         parameter ??= new StructureParameter();
-        config    ??= ConfigureExtension.StructureModelConfigDefault;
         if (!StructureInitialize(config.DetInfer, 
                 config.RecInfer, 
                 config.Keys, 
                 config.TableModelDir,
                 config.TableCharDictPath, parameter)) 
-            throw new Exception("Initialize err:" + GetLastError());
-    }
-
-    /// <summary>
-    /// PaddleStructureEngine识别引擎对象初始化
-    /// </summary>
-    /// <param name="config">模型配置对象，如果为空则按默认值</param>
-    /// <param name="paramJson">识别参数Json格式，为空均按缺省值</param>
-    public PaddleStructureEngine(StructureModelConfig? config, string? paramJson) 
-    {
-        config ??= ConfigureExtension.StructureModelConfigDefault;
-
-        if (string.IsNullOrEmpty(paramJson))
-        {
-            var path = Path.Combine(NativeExtension.BaseDirectory, @"inference\PaddleOCRStructure.config.json");
-            if (!File.Exists(path)) throw new FileNotFoundException(path);
-            paramJson = File.ReadAllText(path);
-        }
-
-        if (!StructureInitializejson(config.DetInfer,
-                config.RecInfer,
-                config.Keys,
-                config.TableModelDir,
-                config.TableCharDictPath, paramJson))
             throw new Exception("Initialize err:" + GetLastError());
     }
 
