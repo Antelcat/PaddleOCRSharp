@@ -19,11 +19,11 @@ internal static class NativeExtension
     /// 获取程序的当前路径;
     /// </summary>
     /// <returns></returns>
-    internal static string BaseDirectory =>
+    internal static string BaseDirectory { get; set; } =
 #if !NETFRAMEWORK
-         AppContext.BaseDirectory;
+        AppContext.BaseDirectory;
 #else
-         Environment.CurrentDirectory;
+        Environment.CurrentDirectory;
 #endif
 
     /// <summary>
