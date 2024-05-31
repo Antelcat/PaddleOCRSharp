@@ -2,29 +2,37 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;</TargetFrameworks>
-        <RootNamespace>PaddleOCRSharp.runtimes.win_x64</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>Antelcat.PaddleOCRSharp.runtime.win-x64</PackageId>
         <Title>Antelcat.PaddleOCRSharp.runtime.win-x64</Title>
+        <RootNamespace>PaddleOCRSharp.runtimes.win_x64</RootNamespace>
+        <PackageId>Antelcat.PaddleOCRSharp.runtime.win-x64</PackageId>
         <Authors>Antelcat</Authors>
-        <PackageProjectUrl>https://github.com/Antelcat/PaddleOCRSharp</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Antelcat/PaddleOCRSharp.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageTags>paddle;paddleocr;runtime;win-x64</PackageTags>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Version>1.0.0</Version>
         <FileVersion>1.0.0</FileVersion>
-        <Version>1.0.0-preview</Version>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/Antelcat/PaddleOCRSharp.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/Antelcat/PaddleOCRSharp</PackageProjectUrl>
+        <Description>Native libs of PaddleOCRSharp</Description>
+        <Copyright>Copyright Antelcat. All rights reserved</Copyright>
+        <PackageIcon>Icon.png</PackageIcon>
+        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="runtimes\win-x64\native\"/>
         <PackageReference Include="Sdcb.Mkldnn.runtime.win64" Version="0.19.0" />
         <PackageReference Include="Sdcb.Onnx.runtime.win64" Version="1.11.22.423" />
         <PackageReference Include="Sdcb.Paddle2Onnx.runtime.win64" Version="1.0.0.2" />
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="..\..\Icon.png">
+          <Pack>True</Pack>
+          <PackagePath></PackagePath>
+          <Link>Icon.png</Link>
+        </None>
         <None Include="runtimes\**\*" PackagePath="runtimes" Pack="true">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

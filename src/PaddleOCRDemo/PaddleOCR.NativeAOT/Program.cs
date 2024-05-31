@@ -9,7 +9,7 @@ var engine = new PaddleOCREngine(KnownModels.ChineseV4, new OCRParameter
     cls                          = false, 
     det                          = true,  
     use_angle_cls                = false, 
-    det_db_score_mode            = true   
+    det_db_score_mode            = true
 });
 
 Console.WriteLine("Please input the image path:");
