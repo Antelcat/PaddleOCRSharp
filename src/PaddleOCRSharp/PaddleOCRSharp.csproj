@@ -42,16 +42,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     </ItemGroup>
 
-    <ItemGroup>
-        
-
-        <None Include="$(SolutionDir)PaddleOCRSharp\PaddleOCRSharp.targets">
-            <Pack>true</Pack>
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <PackagePath>build</PackagePath>
-        </None>
-    </ItemGroup>
-
 
     <ItemGroup>
         <None Update="PaddleOCRLib\inference\PaddleOCRStructure.config.json">
