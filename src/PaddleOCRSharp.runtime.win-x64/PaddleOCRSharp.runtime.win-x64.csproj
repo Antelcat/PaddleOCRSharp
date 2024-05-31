@@ -1,8 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;</TargetFrameworks>
         <RootNamespace>PaddleOCRSharp.runtimes.win_x64</RootNamespace>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Antelcat.PaddleOCRSharp.runtime.win-x64</PackageId>
+        <Title>Antelcat.PaddleOCRSharp.runtime.win-x64</Title>
+        <Authors>Antelcat</Authors>
+        <PackageProjectUrl>https://github.com/Antelcat/PaddleOCRSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Antelcat/PaddleOCRSharp.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageTags>paddle;paddleocr;runtime;win-x64</PackageTags>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <Version>1.0.0-preview</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,10 +25,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="runtimes\**\*" >
+        <None Include="runtimes\**\*" PackagePath="runtimes" Pack="true">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </None>
+
     </ItemGroup>
 
 </Project>
